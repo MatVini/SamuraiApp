@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SamuraiApp_Console;
+using SamuraiApp_Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,11 @@ namespace SamuraiApp.Shared.Data.DB
         public IEnumerable<Samurai> Read()
         {
             return Context.Samurai.ToList();
+        }
+
+        public Samurai? ReadByName(string name)
+        {
+            return Context.Samurai.FirstOrDefault(x => x.Name==name);
         }
 
         public void Update(Samurai sam)

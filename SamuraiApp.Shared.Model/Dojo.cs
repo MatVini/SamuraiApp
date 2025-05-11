@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SamuraiApp_Console
+namespace SamuraiApp_Model
 {
     public class Dojo
     {
@@ -20,11 +20,12 @@ namespace SamuraiApp_Console
 
         public string Name { get; set; }
         public string Region { get; set; }
-        private List<Samurai> Samurais = new();
+        public int Id {  get; set; }
+        private ICollection<Samurai> Samurais = new List<Samurai>();
 
         public override string ToString()
         {
-            return $@"Dojo {Name} in the {Region} region.";
+            return $@"Dojo {Name} in the {Region} region. (ID: {Id})";
         }
 
         public void AddSamurai(Samurai s)

@@ -1,4 +1,4 @@
-﻿using SamuraiApp_Console;
+﻿using SamuraiApp_Model;
 using SamuraiApp.Shared.Data.DB;
 
 internal class Program
@@ -8,32 +8,24 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        var SamDal = new SamuraiDAL(new SamuraiAppContext());
-
-        //SamDal.Create(new Samurai("Tomoe", "Wagasaki"));
-        //SamDal.Update(new Samurai("Mami", "Wagasaki") { Id = 1003 });
-        //SamDal.Delete(new Samurai() { Id = 1003 });
-
-        var SamList = SamDal.Read();
-
-        foreach (var s in SamList)
-        {
-            Console.WriteLine(s);
-        }
-
-        return;
-        // commenting below
+        var SamDal = new DAL<Samurai>();
+        var DojDal = new DAL<Dojo>();
 
         bool exit = false;
         while (!exit)
         {
             Console.Clear();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
+            Console.WriteLine("Welcome to SamuraiApp!\n" +
+                "Choose an option below.\n\n");
+            Console.WriteLine("Option 1: Register a Samurai.");
+            Console.WriteLine("Option 2: Register a Dojo.");
+            Console.WriteLine("Option 3: Register a Kenjutsu.");
+            Console.WriteLine("Option 4: Enroll Samurai to Dojo.");
+            Console.WriteLine("Option 5: Assign Kenjutsu to Samurai.");
+            Console.WriteLine("Option 6: List enrolled Samurai from Dojo.");
+            Console.WriteLine("Option 7: List known Kenjutsu from Samurai.");
+            Console.WriteLine("Option 8: List Samurai who know given Kenjutsu.");
+            Console.WriteLine("Option 0: Exit");
 
             int option = int.Parse(Console.ReadLine());
 
@@ -53,60 +45,63 @@ internal class Program
                     DojoRegistration();
                     break;
                 case 3:
+                    KenjutsuRegistration();
                     break;
                 case 4:
+                    SamuraiEnrollment();
+                    break;
+                case 5:
                     break;
             }
         }
 
-        Samurai samurai1 = new Samurai("Jin", "Sakana");
-        Dojo dojo1 = new Dojo("Shinboshi", "Kansai");
-
-        dojo1.AddSamurai(samurai1);
-
-        dojo1.ListSamurai();
-        // Console.WriteLine(samurai1);
-    }
-
-    private static void SamuraiRegistration()
-    {
-        Console.Clear();
-        Console.WriteLine("Enlisting new Samurai.");
-        Console.WriteLine("Name?");
-        string name = Console.ReadLine();
-        Console.WriteLine("Clan?");
-        string clan = Console.ReadLine();
-        Samurai s = new Samurai(name, clan);
-        SamuraiList.Add("", s);
-    }
-
-    private static void DojoRegistration()
-    {
-        Console.Clear();
-        Console.WriteLine("Establishing new Dojo.");
-        Console.WriteLine("Name?");
-        string name = Console.ReadLine();
-        Console.WriteLine("Region?");
-        string region = Console.ReadLine();
-        Dojo d = new Dojo(name, region);
-        DojoList.Add("", d);
-    }
-
-    private static void SamuraiEnlisting()
-    {
-        Console.Clear();
-        Console.WriteLine("Enrolling Samurai to Dojo.");
-        Console.WriteLine("Which Samurai are you enrolling?");
-        string samName = Console.ReadLine();
-        if (SamuraiList.ContainsKey(samName))
+        void SamuraiRegistration()
         {
-            Console.WriteLine("To which Dojo?");
-            string dojoName = Console.ReadLine();
-            DojoList.TryGetValue(dojoName, out var d);
+            Console.Clear();
+            Console.WriteLine("Enlisting new Samurai.");
+            Console.WriteLine("Name?");
+            string name = Console.ReadLine();
+            Console.WriteLine("Clan?");
+            string clan = Console.ReadLine();
+            Samurai s = new Samurai(name, clan);
+            SamuraiList.Add("", s);
         }
-        else
+
+        void DojoRegistration()
         {
-            Console.WriteLine("No such Samurai.");
+            Console.Clear();
+            Console.WriteLine("Establishing new Dojo.");
+            Console.WriteLine("Name?");
+            string name = Console.ReadLine();
+            Console.WriteLine("Region?");
+            string region = Console.ReadLine();
+            Dojo d = new Dojo(name, region);
+            DojoList.Add("", d);
+        }
+
+        void KenjutsuRegistration()
+        {
+            Console.Clear();
+            // kenjutsu logic
+        }
+
+        void SamuraiEnrollment()
+        {
+            Console.Clear();
+            Console.WriteLine("Enrolling Samurai to Dojo.");
+            Console.WriteLine("Which Samurai are you enrolling?");
+            string samName = Console.ReadLine();
+            //var targetSam = 
+            if (SamuraiList.ContainsKey(samName))
+            {
+                Console.WriteLine("To which Dojo?");
+                string dojoName = Console.ReadLine();
+                DojoList.TryGetValue(dojoName, out var d);
+            }
+            else
+            {
+                Console.WriteLine("No such Samurai.");
+            }
         }
     }
 }
