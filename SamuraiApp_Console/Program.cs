@@ -51,6 +51,13 @@ internal class Program
                     SamuraiEnrollment();
                     break;
                 case 5:
+                    KenjutsuLearning();
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
                     break;
             }
         }
@@ -82,7 +89,11 @@ internal class Program
         void KenjutsuRegistration()
         {
             Console.Clear();
-            // kenjutsu logic
+            Console.WriteLine("Inventing new Kenjutsu.");
+            Console.WriteLine("Style?");
+            string style = Console.ReadLine();
+            // Kenjutsu k = new Kenjutsu(style);
+            // KenjutsuList.Add("", k);
         }
 
         void SamuraiEnrollment()
@@ -91,17 +102,32 @@ internal class Program
             Console.WriteLine("Enrolling Samurai to Dojo.");
             Console.WriteLine("Which Samurai are you enrolling?");
             string samName = Console.ReadLine();
-            //var targetSam = 
             if (SamuraiList.ContainsKey(samName))
             {
                 Console.WriteLine("To which Dojo?");
                 string dojoName = Console.ReadLine();
-                DojoList.TryGetValue(dojoName, out var d);
+                if (DojoList.ContainsKey(dojoName))
+                {
+                    // add Samurai to Dojo logic
+                }
+                else
+                {
+                    Console.WriteLine("No such Dojo.");
+                }
             }
             else
             {
                 Console.WriteLine("No such Samurai.");
             }
+        }
+
+        void KenjutsuLearning()
+        {
+            Console.Clear();
+            Console.WriteLine("Assigning Kenjutsu to Samurai.");
+            Console.WriteLine("What Kenjutsu style?");
+            string kenName = Console.ReadLine();
+            // rest of logic
         }
     }
 }

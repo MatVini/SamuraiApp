@@ -21,7 +21,7 @@ namespace SamuraiApp_Model
         public string Name { get; set; }
         public string Region { get; set; }
         public int Id {  get; set; }
-        private ICollection<Samurai> Samurais = new List<Samurai>();
+        private ICollection<Samurai> Samurais { get; set; } = new List<Samurai>();
 
         public override string ToString()
         {
@@ -36,9 +36,16 @@ namespace SamuraiApp_Model
         public void ListSamurai()
         {
             Console.WriteLine($"Students from Dojo {Name}.");
-            foreach (Samurai s in Samurais)
+            if (Samurais.Count > 0)
             {
-                Console.WriteLine($"Student: {s}");
+                foreach (Samurai s in Samurais)
+                {
+                    Console.WriteLine($"Student: {s}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No students in this Dojo.");
             }
         }
     }
