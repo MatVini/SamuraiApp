@@ -22,8 +22,7 @@ namespace SamuraiApp_Model
         public string Name { get; set; }
         public string Clan { get; set; }
         public virtual Dojo? Dojo { get; set; }
-        private ICollection<Kenjutsu> Kenjutsus { get; set; } =
-            new List<Kenjutsu>();
+        public virtual ICollection<Kenjutsu> KenCollect { get; set; }
         public int Id {  get; set; }
 
         public override string ToString()

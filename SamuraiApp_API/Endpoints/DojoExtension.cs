@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SamuraiApp.Shared.Data.DB;
+using SamuraiApp_API.Responses;
 using SamuraiApp_Model;
 
 namespace SamuraiApp_API.Endpoints
@@ -8,36 +9,66 @@ namespace SamuraiApp_API.Endpoints
     {
         public static void AddEndpointsDojo(this WebApplication app)
         {
-            app.MapGet("/Dojo", ([FromServices] DAL<Dojo> dal) =>
+            var groupBuilder = app.MapGroup("Dojo")
+                .RequireAuthorization()
+                .WithTags("Dojo");
+
+            groupBuilder.MapGet("", ([FromServices] DAL<Dojo> dal) =>
             {
-                return Results.Ok(dal.Read());
+                var dojList = dal.Read();
+                if (dojList == null) return Results.NotFound();
+                var dojResponseList = EntityListToResponseList(dojList);
+                return Results.Ok(dojResponseList);
             });
 
-            app.MapPost("/Dojo", ([FromServices] DAL<Dojo> dal,
+            groupBuilder.MapGet("/{id}", (int id,
+                [FromServices] DAL<Dojo> dal) =>
+            {
+                var doj = dal.ReadBy(d=>d.Id == id);
+                if (doj == null) Results.NotFound();
+                return Results.Ok(EntityToResponse(doj));
+            });
+
+            groupBuilder.MapPost("", ([FromServices] DAL<Dojo> dal,
                 [FromBody] Dojo doj) =>
             {
-                dal.Create(doj);
+                dal.Create(new Dojo(doj.Name, doj.Region));
                 return Results.Created();
             });
 
-            app.MapDelete("/Dojo/{id}", ([FromServices] DAL<Dojo> dal, int id) =>
+            groupBuilder.MapDelete("/{id}",
+                ([FromServices] DAL<Dojo> dal, int id) =>
             {
-                var doj = dal.ReadBy(d => d.Id == id);
+                var doj = dal.ReadBy(d=>d.Id == id);
                 if (doj == null) return Results.NotFound();
                 dal.Delete(doj);
                 return Results.NoContent();
             });
 
-            app.MapPut("/Dojo/{id}", ([FromServices] DAL<Dojo> dal,
+            groupBuilder.MapPut("/{id}", ([FromServices] DAL<Dojo> dal,
                 [FromBody] Dojo doj) =>
             {
-                var dojToEdit = dal.ReadBy(d => d.Id == doj.Id);
                 if (doj == null) return Results.NotFound();
+                var dojToEdit = dal.ReadBy(d=>d.Id == doj.Id);
                 dojToEdit.Name = doj.Name;
                 dojToEdit.Region = doj.Region;
                 dal.Update(dojToEdit);
                 return Results.Created();
             });
+        }
+
+        private static ICollection<DojoResponse>
+            EntityListToResponseList(IEnumerable<Dojo> entities)
+        {
+            return entities.Select(a=>EntityToResponse(a)).ToList();
+        }
+        private static DojoResponse EntityToResponse(Dojo entity)
+        {
+            return new DojoResponse(
+                entity.Id,
+                entity.Name,
+                entity.Region
+            );
         }
     }
 }

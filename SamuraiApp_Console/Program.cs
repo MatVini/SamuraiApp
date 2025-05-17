@@ -1,15 +1,15 @@
 ﻿using SamuraiApp_Model;
 using SamuraiApp.Shared.Data.DB;
+using SamuraiApp.Shared.Model;
+using Microsoft.IdentityModel.Tokens;
 
 internal class Program
 {
-    public static Dictionary<string, Samurai> SamuraiList = new();
-    public static Dictionary<string, Dojo> DojoList = new();
-
     private static void Main(string[] args)
     {
         var SamDal = new DAL<Samurai>();
         var DojDal = new DAL<Dojo>();
+        var KenDal = new DAL<Kenjutsu>();
 
         bool exit = false;
         while (!exit)
@@ -20,12 +20,15 @@ internal class Program
             Console.WriteLine("Option 1: Register a Samurai.");
             Console.WriteLine("Option 2: Register a Dojo.");
             Console.WriteLine("Option 3: Register a Kenjutsu.");
-            Console.WriteLine("Option 4: Enroll Samurai to Dojo.");
-            Console.WriteLine("Option 5: Assign Kenjutsu to Samurai.");
-            Console.WriteLine("Option 6: List enrolled Samurai from Dojo.");
-            Console.WriteLine("Option 7: List known Kenjutsu from Samurai.");
-            Console.WriteLine("Option 8: List Samurai who know given Kenjutsu.");
-            Console.WriteLine("Option 0: Exit");
+            Console.WriteLine("Option 4: List all Samurai.");
+            Console.WriteLine("Option 5: List all Dojo.");
+            Console.WriteLine("Option 6: List all Kenjutsu.");
+            Console.WriteLine("Option 7: Enroll Samurai to Dojo.");
+            Console.WriteLine("Option 8: Assign Kenjutsu to Samurai.");
+            Console.WriteLine("Option 9: List enrolled Samurai from Dojo.");
+            Console.WriteLine("Option 10: List known Kenjutsu from Samurai.");
+            Console.WriteLine("Option 11: List Samurai who know given Kenjutsu.");
+            Console.WriteLine("Option 0: Exit\n");
 
             int option = int.Parse(Console.ReadLine());
 
@@ -33,6 +36,7 @@ internal class Program
             {
                 default:
                     Console.WriteLine("Invalid option.");
+                    Console.ReadKey();
                     break;
                 case 0:
                     Console.WriteLine("Farewell.");
@@ -48,16 +52,19 @@ internal class Program
                     KenjutsuRegistration();
                     break;
                 case 4:
-                    SamuraiEnrollment();
+                    ListSamurai();
                     break;
                 case 5:
-                    KenjutsuLearning();
+                    ListDojo();
                     break;
                 case 6:
+                    ListKenjutsu();
                     break;
                 case 7:
+                    SamuraiEnrollment();
                     break;
                 case 8:
+                    KenjutsuLearning();
                     break;
             }
         }
@@ -71,7 +78,9 @@ internal class Program
             Console.WriteLine("Clan?");
             string clan = Console.ReadLine();
             Samurai s = new Samurai(name, clan);
-            SamuraiList.Add("", s);
+            SamDal.Create(s);
+            Console.WriteLine($"Samurai {name} enlisted successfully.");
+            Console.ReadKey();
         }
 
         void DojoRegistration()
@@ -83,7 +92,9 @@ internal class Program
             Console.WriteLine("Region?");
             string region = Console.ReadLine();
             Dojo d = new Dojo(name, region);
-            DojoList.Add("", d);
+            DojDal.Create(d);
+            Console.WriteLine($"Dojo {name} established successfully.");
+            Console.ReadKey();
         }
 
         void KenjutsuRegistration()
@@ -92,8 +103,59 @@ internal class Program
             Console.WriteLine("Inventing new Kenjutsu.");
             Console.WriteLine("Style?");
             string style = Console.ReadLine();
-            // Kenjutsu k = new Kenjutsu(style);
-            // KenjutsuList.Add("", k);
+            Kenjutsu k = new Kenjutsu(style);
+            KenDal.Create(k);
+            Console.WriteLine($"Kenjutsu style {style} invented successfully.");
+            Console.ReadKey();
+        }
+
+        void ListSamurai()
+        {
+            Console.Clear();
+            var samList = SamDal.Read();
+            if (!samList.IsNullOrEmpty())
+            {
+                foreach (var sam in samList)
+                {
+                    Console.WriteLine(sam);
+                }
+            }
+            else Console.WriteLine("No Samurai found.");
+                Console.WriteLine("\nPress anything to continue.");
+            Console.ReadKey();
+        }
+
+        void ListDojo()
+        {
+            Console.Clear();
+            var dojList = DojDal.Read();
+            if (!dojList.IsNullOrEmpty())
+            {
+                foreach (var doj in dojList)
+                {
+                    Console.WriteLine(doj);
+                }
+            }
+            else Console.WriteLine("No Dojo found.");
+
+            Console.WriteLine("\nPress anything to continue.");
+            Console.ReadKey();
+        }
+
+        void ListKenjutsu()
+        {
+            Console.Clear();
+            var kenList = KenDal.Read();
+            if (!kenList.IsNullOrEmpty())
+            {
+                foreach (var ken in kenList)
+                {
+                    Console.WriteLine(ken);
+                }
+            }
+            else Console.WriteLine("No Kenjutsu found.");
+            Console.WriteLine("\nPress anything to continue.");
+            Console.ReadKey();
         }
 
         void SamuraiEnrollment()
@@ -102,13 +164,17 @@ internal class Program
             Console.WriteLine("Enrolling Samurai to Dojo.");
             Console.WriteLine("Which Samurai are you enrolling?");
             string samName = Console.ReadLine();
-            if (SamuraiList.ContainsKey(samName))
+            var targetSam = SamDal.ReadBy(s=>s.Name.Equals(samName));
+            if (targetSam != null)
             {
                 Console.WriteLine("To which Dojo?");
-                string dojoName = Console.ReadLine();
-                if (DojoList.ContainsKey(dojoName))
+                string dojName = Console.ReadLine();
+                var targetDoj = DojDal.ReadBy(d=>d.Name.Equals(dojName));
+                if (targetDoj != null)
                 {
-                    // add Samurai to Dojo logic
+                    targetDoj.AddSamurai(targetSam);
+                    Console.WriteLine($"Samurai {samName} enrolled to " +
+                        $"Dojo {dojName} successfully.");
                 }
                 else
                 {
@@ -117,8 +183,9 @@ internal class Program
             }
             else
             {
-                Console.WriteLine("No such Samurai.");
+                Console.WriteLine("No such Samurai");
             }
+            Console.ReadKey();
         }
 
         void KenjutsuLearning()

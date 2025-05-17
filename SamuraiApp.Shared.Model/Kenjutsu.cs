@@ -19,8 +19,12 @@ namespace SamuraiApp.Shared.Model
         }
 
         public string Style { get; set; }
-        private ICollection<Samurai> Samurais { get; set; } =
-            new List<Samurai>();
+        public virtual ICollection<Samurai> SamCollect { get; set; }
         public int Id { get; set; }
+
+        public override string ToString()
+        {
+            return $@"Kenjutsu style: {Style}. (ID: {Id})";
+        }
     }
 }
