@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SamuraiApp.Shared.Data.DB;
 using SamuraiApp.Shared.Model;
 using SamuraiApp_API.Requests;
@@ -31,17 +32,19 @@ namespace SamuraiApp_API.Endpoints
                 return Results.Ok(EntityToResponse(sam));
             });
 
+            groupBuilder.MapGet("/{id}/full", (int id,
+                [FromServices] DAL<Samurai> dal) =>
+            {
+                var sam = dal.ReadBy(s=>s.Id == id);
+                if (sam == null) Results.NotFound();
+                return Results.Ok(EntityToFullResponse(sam));
+            });
+
             groupBuilder.MapPost("", ([FromServices] DAL<Samurai> dal,
                 [FromServices] DAL<Kenjutsu> kenDal,
                 [FromBody] SamuraiRequest sam) =>
             {
-                dal.Create(
-                    new Samurai(sam.name, sam.clan)
-                    {
-                        KenCollect = sam.Kenjutsu != null?
-                        KenjutsuRequestConvert(sam.Kenjutsu, kenDal) :
-                        new List<Kenjutsu>()
-                    });
+                dal.Create(new Samurai(sam.name, sam.clan));
                 return Results.Created();
             });
                 
@@ -59,11 +62,62 @@ namespace SamuraiApp_API.Endpoints
             {
                 if (sam == null) return Results.NotFound();
                 var samToEdit = dal.ReadBy(s=>s.Id == sam.id);
+                if (samToEdit == null) return Results.NotFound();
                 samToEdit.Name = sam.name;
                 samToEdit.Clan = sam.clan;
                 dal.Update(samToEdit);
                 return Results.Created();
             });
+
+            groupBuilder.MapPost("/{id}/dojo",
+                ([FromServices] DAL<Samurai> dal,
+                [FromServices] DAL<Dojo> dojDal,
+                [FromBody] SamuraiDojKenRequest samDK,
+                int id) =>
+            {
+                var sam = dal.ReadBy(s=>s.Id == id);
+                var doj = dojDal.ReadBy(d=>d.Id == samDK.id);
+                if (sam == null || doj == null)
+                    return Results.NotFound();
+                sam.Dojo = doj;
+                dal.Update(sam);
+                return Results.NoContent();
+            });
+
+            groupBuilder.MapDelete("/{id}/dojo",
+                ([FromServices] DAL<Samurai> dal, int id) =>
+                {
+                    var sam = dal.ReadBy(s => s.Id == id);
+                    if (sam == null) return Results.NotFound();
+                    sam.Dojo = null;
+                    dal.Update(sam);
+                    return Results.NoContent();
+                });
+
+            groupBuilder.MapPost("/{id}/kenjutsu",
+                ([FromServices] DAL<Samurai> dal,
+                [FromServices] DAL<Kenjutsu> kenDal,
+                [FromBody] SamuraiDojKenRequest samDK,
+                int id) =>
+            {
+                var sam = dal.ReadBy(s=>s.Id == id);
+                var ken = kenDal.ReadBy(k=>k.Id == samDK.id);
+                if (sam == null || ken == null)
+                    return Results.NotFound();
+                sam.KenCollect.Add(ken);
+                dal.Update(sam);
+                return Results.NoContent();
+            });
+
+            groupBuilder.MapDelete("/{id}/kenjutsu",
+                ([FromServices] DAL<Samurai> dal, int id) =>
+                {
+                    var sam = dal.ReadBy(s=>s.Id == id);
+                    if (sam == null) return Results.NotFound();
+                    sam.KenCollect.Clear();
+                    dal.Update(sam);
+                    return Results.NoContent();
+                });
         }
 
         private static List<Kenjutsu> KenjutsuRequestConvert
@@ -97,5 +151,15 @@ namespace SamuraiApp_API.Endpoints
         {
             return new SamuraiResponse(entity.Id, entity.Name, entity.Clan);
         }
+
+        private static SamuraiFullResponse EntityToFullResponse(Samurai sam)
+        {
+            string doj;
+            if (sam.Dojo == null) doj = "No Dojo.";
+            else doj = sam.Dojo.Name;
+            return new SamuraiFullResponse(
+                sam.Id, sam.Name, sam.Clan, doj, sam.KenCollect);
+        }
+
     }
 }

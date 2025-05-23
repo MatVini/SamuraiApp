@@ -8,17 +8,17 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
-    (options => options.SerializerOptions.ReferenceHandler =
+    (options=>options.SerializerOptions.ReferenceHandler =
     ReferenceHandler.IgnoreCycles);
 builder.Services.AddDbContext<SamuraiAppContext>();
+builder.Services.AddIdentityApiEndpoints<AccessUser>()
+    .AddEntityFrameworkStores<SamuraiAppContext>();
+builder.Services.AddAuthorization();
 builder.Services.AddTransient<DAL<Samurai>>();
 builder.Services.AddTransient<DAL<Dojo>>();
 builder.Services.AddTransient<DAL<Kenjutsu>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddIdentityApiEndpoints<AccessUser>()
-    .AddEntityFrameworkStores<SamuraiAppContext>();
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
