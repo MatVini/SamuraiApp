@@ -21,7 +21,7 @@ namespace SamuraiApp_Model
         public string Name { get; set; }
         public string Region { get; set; }
         public int Id {  get; set; }
-        private ICollection<Samurai> SamCollect { get; set; } =
+        public virtual ICollection<Samurai> SamCollect { get; set; } =
             new List<Samurai>();
 
         public override string ToString()

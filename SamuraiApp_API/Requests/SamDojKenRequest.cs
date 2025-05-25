@@ -2,5 +2,5 @@
 
 namespace SamuraiApp_API.Requests
 {
-    public record SamuraiDojKenRequest (int id);
+    public record SamDojKenRequest (int id);
 }

@@ -1,8 +1,8 @@
 ﻿namespace SamuraiApp_API.Requests
 {
-    public record SamuraiEditRequest (
+    public record DojoEditRequest(
         int id,
         string name,
-        string clan
+        string region
         );
 }
