@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SamuraiApp.Shared.Data.DB;
 using SamuraiApp.Shared.Model;
 using SamuraiApp_API.Requests;
@@ -25,10 +26,17 @@ namespace SamuraiApp_API.Endpoints
 
             groupBuilder.MapGet("/{id}",
                 (int id,
-                [FromServices] DAL<Samurai> dal) =>
+                [FromServices] DAL<Samurai> dal,
+                [FromServices] DAL<Kenjutsu> kenDal) =>
             {
-                var sam = dal.ReadBy(s => s.Id == id);
+                var sam = dal.ReadBy(s=>s.Id == id);
                 if (sam == null) return Results.NotFound();
+                var kenList = new List<Kenjutsu>();
+                foreach (var kRes in sam.KenCollect)
+                {
+                    var ken = kenDal.ReadBy(k=>k.Id == kRes.Id);
+                    kenList.Add(ken);
+                }
                 return Results.Ok(EntityToFullResponse(sam));
             }).WithSummary("Shows Samurai with their clan, " +
             "what Dojo they're enrolled in, and " +
@@ -87,6 +95,10 @@ namespace SamuraiApp_API.Endpoints
                 {
                     var sam = dal.ReadBy(s=>s.Id == id);
                     if (sam == null) return Results.NotFound();
+                    // apparently doesn't work
+                    // must set key to null explicitly
+                    // not sure if that works with current DB configuration
+                    // will leave as is
                     sam.Dojo = null;
                     dal.Update(sam);
                     return Results.NoContent();
@@ -119,29 +131,7 @@ namespace SamuraiApp_API.Endpoints
                 }).WithSummary("Removes all known Kenjutsu from Samurai.");
         }
 
-        private static List<Kenjutsu> KenjutsuRequestConvert
-            (ICollection<KenjutsuRequest> kenList,
-            DAL<Kenjutsu> kenDal)
-        {
-            var kenjutsuList = new List<Kenjutsu>();
-            foreach (var item in kenList)
-            {
-                var ken = RequestToEntity(item);
-                var foundKen = kenDal.ReadBy(
-                    k=>k.Style.ToUpper()
-                    .Equals(ken.Style.ToUpper()));
-                if (foundKen != null) kenjutsuList.Add(foundKen);
-                else kenjutsuList.Add(ken);
-            }
-            return kenjutsuList;
-        }
-
-        private static Kenjutsu RequestToEntity(KenjutsuRequest k)
-        {
-            return new Kenjutsu(k.style);
-        }
-
-        private static ICollection<SamuraiResponse>
+        public static ICollection<SamuraiResponse>
             EntityListToResponseList(IEnumerable<Samurai> entities)
         {
             return entities.Select(a=>EntityToResponse(a)).ToList();
@@ -158,10 +148,16 @@ namespace SamuraiApp_API.Endpoints
         private static SamuraiFullResponse EntityToFullResponse(Samurai sam)
         {
             string doj;
+            var kenList = new List<KenjutsuResponse>();
             if (sam.Dojo == null) doj = "No Dojo.";
             else doj = sam.Dojo.Name;
+            if (!sam.KenCollect.IsNullOrEmpty())
+            {
+                kenList = (List<KenjutsuResponse>)KenjutsuExtension
+                    .EntityListToResponseList(sam.KenCollect);
+            }
             return new SamuraiFullResponse(
-                sam.Id, sam.Name, sam.Clan, doj, sam.KenCollect);
+                sam.Id, sam.Name, sam.Clan, doj, kenList);
         }
 
     }

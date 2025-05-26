@@ -6,6 +6,6 @@ namespace SamuraiApp_API.Responses
         int id,
         string name,
         string region,
-        ICollection<Samurai> samurai
+        ICollection<SamuraiResponse> samurai
     );
 }

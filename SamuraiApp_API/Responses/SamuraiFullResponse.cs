@@ -7,6 +7,6 @@ namespace SamuraiApp_API.Responses
         string name,
         string clan,
         string dojoName,
-        ICollection<Kenjutsu> kenjutsu
+        ICollection<KenjutsuResponse> kenjutsu
         );
 }

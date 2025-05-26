@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SamuraiApp.Shared.Data.DB;
 using SamuraiApp.Shared.Model;
 using SamuraiApp_API.Requests;
@@ -117,7 +118,7 @@ namespace SamuraiApp_API.Endpoints
             "given its ID.");
         }
 
-        private static ICollection<KenjutsuResponse>
+        public static ICollection<KenjutsuResponse>
             EntityListToResponseList(IEnumerable<Kenjutsu> entities)
         {
             return entities.Select(a=>EntityToReponse(a)).ToList();
@@ -128,10 +129,16 @@ namespace SamuraiApp_API.Endpoints
         }
         private static KenjutsuSamResponse EntityToSamResponse(Kenjutsu ken)
         {
+            var samCol = new List<SamuraiResponse>();
+            if (!ken.SamCollect.IsNullOrEmpty())
+            {
+                samCol = (List<SamuraiResponse>)SamuraiExtension
+                    .EntityListToResponseList(ken.SamCollect);
+            }
             return new KenjutsuSamResponse(
                 ken.Id,
                 ken.Style,
-                ken.SamCollect
+                samCol
                 );
         }
     }

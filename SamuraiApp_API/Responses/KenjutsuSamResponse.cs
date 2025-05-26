@@ -5,6 +5,6 @@ namespace SamuraiApp_API.Responses
     public record KenjutsuSamResponse(
         int id,
         string style,
-        ICollection<Samurai> samurai
+        ICollection<SamuraiResponse> samurai
     );
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SamuraiApp.Shared.Data.DB;
 using SamuraiApp_API.Requests;
 using SamuraiApp_API.Responses;
@@ -96,7 +97,7 @@ namespace SamuraiApp_API.Endpoints
             "given its ID.");
         }
 
-        private static ICollection<DojoResponse>
+        public static ICollection<DojoResponse>
             EntityListToResponseList(IEnumerable<Dojo> entities)
         {
             return entities.Select(a=>EntityToResponse(a)).ToList();
@@ -111,11 +112,17 @@ namespace SamuraiApp_API.Endpoints
         }
         private static DojoSamResponse EntityToSamResponse(Dojo doj)
         {
+            var samCol = new List<SamuraiResponse>();
+            if (!doj.SamCollect.IsNullOrEmpty())
+            {
+                samCol = (List<SamuraiResponse>)SamuraiExtension
+                    .EntityListToResponseList(doj.SamCollect);
+            }
             return new DojoSamResponse(
                 doj.Id,
                 doj.Name,
                 doj.Region,
-                doj.SamCollect
+                samCol
                 );
         }
     }
