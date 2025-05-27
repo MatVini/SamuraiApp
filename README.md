@@ -1,7 +1,6 @@
 ﻿# SamuraiApp API README
 
-> Version 1.0 – generated automatically from Swagger (OpenAPI 3.0.4) on **27 May 2025**
-> Slight modifications made by the author.
+> Version 1.0 – generated automatically from Swagger (OpenAPI 3.0.4) on **27 May 2025**  Slight modifications made by the author.
 
 ## 📌 Project purpose
 
@@ -50,70 +49,70 @@ All protected endpoints expect the header
 
 ### Dojo
 
-* **`/Dojo`**
-  *Method*: GET
-  *Summary*: Lists all Dojo and their regions.
-  *Method*: POST
-  *Summary*: Creates a Dojo in a given region.
-  *Method*: PUT
+* **`/Dojo`**  
+  *Method*: GET  
+  *Summary*: Lists all Dojo and their regions.  
+  *Method*: POST  
+  *Summary*: Creates a Dojo in a given region.  
+  *Method*: PUT  
   *Summary*: Updates a Dojo's name and region given its ID.
-* **`/Dojo/{id}`**
-  *Method*: GET
-  *Summary*: Shows a Dojo with its region and all enrolled Samurai.
-  *Method*: DELETE
+* **`/Dojo/{id}`**  
+  *Method*: GET  
+  *Summary*: Shows a Dojo with its region and all enrolled Samurai.  
+  *Method*: DELETE  
   *Summary*: Deletes a Dojo.
-* **`/Dojo/{id}/samurai`**
-  *Method*: POST
-  *Summary*: Enrolls multiple Samurai to Dojo given their IDs.
-  *Method*: DELETE
+* **`/Dojo/{id}/samurai`**  
+  *Method*: POST  
+  *Summary*: Enrolls multiple Samurai to Dojo given their IDs.  
+  *Method*: DELETE  
   *Summary*: Removes all Samurai from a Dojo.
 
 ### Kenjutsu
 
-* **`/Kenjutsu`**
-  *Method*: GET
-  *Summary*: Lists all Kenjutsu styles.
-  *Method*: POST
-  *Summary*: Creates a Kenjutsu style.
-  *Method*: PUT
+* **`/Kenjutsu`**  
+  *Method*: GET  
+  *Summary*: Lists all Kenjutsu styles.  
+  *Method*: POST  
+  *Summary*: Creates a Kenjutsu style.  
+  *Method*: PUT  
   *Summary*: Updates Kenjutsu's style given its ID.
-* **`/Kenjutsu/{id}`**
-  *Method*: GET
-  *Summary*: Shows Kenjutsu and all Samurai that practice it.
-  *Method*: DELETE
+* **`/Kenjutsu/{id}`**  
+  *Method*: GET  
+  *Summary*: Shows Kenjutsu and all Samurai that practice it.  
+  *Method*: DELETE  
   *Summary*: Deletes Kenjutsu.
-* **`/Kenjutsu/{id}/samurai`**
-  *Method*: POST
-  *Summary*: Teaches multiple Samurai a Kenjutsu given their IDs.
-  *Method*: DELETE
+* **`/Kenjutsu/{id}/samurai`**  
+  *Method*: POST  
+  *Summary*: Teaches multiple Samurai a Kenjutsu given their IDs.  
+  *Method*: DELETE  
   *Summary*: Unassigns all Samurai from Kenjutsu.
-* **`/Kenjutsu/{id}/samurai/partial`**
-  *Method*: DELETE
+* **`/Kenjutsu/{id}/samurai/partial`**  
+  *Method*: DELETE  
   *Summary*: Unassigns some Samurai from Kenjutsu given their IDs.
 
 ### Samurai
 
-* **`/Samurai`**
-  *Method*: GET
-  *Summary*: Lists all Samurai and their clans.
-  *Method*: POST
-  *Summary*: Creates a Samurai and puts them in a clan.
-  *Method*: PUT
+* **`/Samurai`**  
+  *Method*: GET  
+  *Summary*: Lists all Samurai and their clans.  
+  *Method*: POST  
+  *Summary*: Creates a Samurai and puts them in a clan.  
+  *Method*: PUT  
   *Summary*: Updates Samurai's name and clan given their ID.
-* **`/Samurai/{id}`**
-  *Method*: GET
-  *Summary*: Shows Samurai with their clan, what Dojo they're enrolled in, and all their known Kenjutsu.
-  *Method*: DELETE
+* **`/Samurai/{id}`**  
+  *Method*: GET  
+  *Summary*: Shows Samurai with their clan, what Dojo they're enrolled in, and all their known Kenjutsu.  
+  *Method*: DELETE  
   *Summary*: Deletes Samurai.
-* **`/Samurai/{id}/dojo`**
-  *Method*: POST
-  *Summary*: Enrolls Samurai to a Dojo given its ID.
-  *Method*: DELETE
+* **`/Samurai/{id}/dojo`**  
+  *Method*: POST  
+  *Summary*: Enrolls Samurai to a Dojo given its ID.  
+  *Method*: DELETE  
   *Summary*: Removes Samurai from Dojo.
-* **`/Samurai/{id}/kenjutsu`**
-  *Method*: POST
-  *Summary*: Teaches Samurai a Kenjutsu given its ID.
-  *Method*: DELETE
+* **`/Samurai/{id}/kenjutsu`**  
+  *Method*: POST  
+  *Summary*: Teaches Samurai a Kenjutsu given its ID.  
+  *Method*: DELETE  
   *Summary*: Removes all known Kenjutsu from Samurai.
 
 ## 🛠️ Running locally
