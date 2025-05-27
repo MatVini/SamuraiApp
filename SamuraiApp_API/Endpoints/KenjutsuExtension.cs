@@ -104,7 +104,7 @@ namespace SamuraiApp_API.Endpoints
             }).WithSummary("Unassigns some Samurai from Kenjutsu " +
             "given their IDs.");
 
-            groupBuilder.MapPut("/{id}",
+            groupBuilder.MapPut("",
                 ([FromServices] DAL<Kenjutsu> dal,
                 [FromBody] KenjutsuEditRequest ken) =>
             {

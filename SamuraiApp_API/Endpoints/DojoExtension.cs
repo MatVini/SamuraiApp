@@ -82,7 +82,7 @@ namespace SamuraiApp_API.Endpoints
                 return Results.NoContent();
             }).WithSummary("Removes all Samurai from a Dojo.");
 
-            groupBuilder.MapPut("/{id}",
+            groupBuilder.MapPut("",
                 ([FromServices] DAL<Dojo> dal,
                 [FromBody] DojoEditRequest doj) =>
             {

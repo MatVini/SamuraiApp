@@ -18,7 +18,7 @@ namespace SamuraiApp.Shared.Data.DB
         public DbSet<Dojo> Dojo { get; set; }
         public DbSet<Kenjutsu> Kenjutsu { get; set; }
 
-        private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SamuraiApp_DB_V1;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private string ConnectionString = "Server=tcp:samuraiappserver.database.windows.net,1433;Initial Catalog=SamuraiApp_DB_V1;Persist Security Info=False;User ID=mvcs@mail.com@samuraiappserver;Password=On!gash1M4;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
